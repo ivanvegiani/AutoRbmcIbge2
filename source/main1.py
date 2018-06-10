@@ -3,6 +3,14 @@
 # python 3
 # ftp://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados/
 
+"""
+version:2.0
+author: Jose Ivan Silva Vegiani
+Automacao de download e descompactação de dados do rbmc (IBGE)
+rbmc: Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS
+Script de código aberto e livre, cedido gratuitamente pelo autor.
+"""
+
 
 
 import autoRmbclib1
@@ -17,13 +25,6 @@ import tkcalendar
 import locale
 
 
-"""
-version:2.0
-author: Jose Ivan Silva Vegiani
-Automacao de download e descompactação de dados do rbmc (IBGE)
-rbmc: Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS
-Script de código aberto e livre, cedido gratuitamente pelo autor.
-"""
 
 # metodos main
 
