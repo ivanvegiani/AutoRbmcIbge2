@@ -63,6 +63,12 @@ class RbmcLib():
         self.now1=now1
         self.today_gnss=date2doy(datetime.date(now1.year,now1.month,now1.day))
 
+    def convert_to_doy(self,date):
+            first_day = datetime.date(date.year, 1, 1)
+            delta = date - first_day
+            return delta.days + 1
+
+
 
     def logs_info(mensagem): #log de informação
         logging.info(mensagem)
@@ -92,9 +98,6 @@ class RbmcLib():
             return True
         else:
             return False
-
-
-
 
     def id_target_function(day_delay,delay=True): # define o alvo
         """ Retorna id_target (identificação do dia alvo)"""
