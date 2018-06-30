@@ -25,8 +25,9 @@ import tkcalendar
 import locale
 
 
-
-# metodos main
+y_text_canvas=10
+x_text_canvas=70
+bases_escolhidas=[""]
 
 def update():
     # i=0
@@ -50,6 +51,29 @@ def browse_button():
     filename = filedialog.askdirectory()
     local_folders.set(filename)
     l9.config(text=local_folders.get())
+
+
+def add_button_text():
+    global x_text_canvas
+    global y_text_canvas
+    global bases_escolhidas
+
+    bb1=True
+    aa1=c1.get()
+    tag1='1'
+    i=0
+    for j in bases_escolhidas:
+        if aa1==bases_escolhidas[i]:
+            bb1=False
+        i=i+1
+
+    if bb1:
+        bases_escolhidas.append(c1.get())
+        canvas.create_text(x_text_canvas,y_text_canvas,font="Times 12 italic bold",text=bases_escolhidas[-1],tags=tag1)
+        canvas.update
+        y_text_canvas=y_text_canvas+20
+
+
 
 i1=autoRmbclib1.RbmcLib()
 
@@ -100,13 +124,14 @@ frame3.grid(row=2,column=1,sticky="s")#Canvas
 frame5.grid(row=0,column=1)#labels de hoje
 frame6.grid(row=2,column=2,sticky="n")
 #Canvas
-canvas = Canvas(frame3, bg='white', width=200, height=300)
+canvas = Canvas(frame3, bg='white', width=260, height=300)
 canvas.grid(row=0,column=0)
+#
 
 
 # Botões
 
-b1=Button(frame1,text="Adicionar")
+b1=Button(frame1,text="Adicionar",command=add_button_text)
 b2=Button(frame1,text="Salvar em:",command=browse_button)
 b3=Button(frame1,text="Extrair em:")
 
