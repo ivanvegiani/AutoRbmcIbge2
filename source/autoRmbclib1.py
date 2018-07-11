@@ -30,7 +30,7 @@ import threading
 # paths_bases_globais_list = []
 # folderYear = ''
 # id_target = ''
-# file_target = []
+#
 # paths_extracts = []
 # check = 0
 
@@ -56,28 +56,7 @@ def date2doy(date): # biblioteca de terceiros, créditos ao  https://github.com/
     delta = date - first_day
     return delta.days + 1
 
-class RbmcLib():
-
-    def __init__(self):
-        self.sigla = ('Cascavel - prcv', 'Maringá - prma', 'Paraná - ufpr', 'Guarapuava - prgu') # siglas das bases
-        self.now1=now1
-        self.today_gnss=date2doy(datetime.date(now1.year,now1.month,now1.day))
-
-    def convert_to_doy(self,date):
-            first_day = datetime.date(date.year, 1, 1)
-            delta = date - first_day
-            return delta.days + 1
-
-
-
-    def logs_info(mensagem): #log de informação
-        logging.info(mensagem)
-
-    def logs_bug(nome_variavel,variavel):  # log para debug, utilizado somente em desenvolvimento
-        logging.debug('debug '+nome_variavel+': '+variavel)
-
-
-    def folder_year_function(day_delay):  # define a pasta local relativo ao ano
+def folder_year_function(day_delay):  # define a pasta local relativo ao ano
         """ day_delay é os dias subtraidos ao dia atual"""
 
         now = datetime.datetime.now()
@@ -91,6 +70,52 @@ class RbmcLib():
             folderYear = str(now.year)
         return folderYear
 
+
+
+
+
+class RbmcLib():
+
+    def __init__(self):
+        self.sigla = ('Cascavel - prcv', 'Maringá - prma', 'Curitiba - ufpr', 'Guarapuava - prgu') # siglas das bases
+        self.now1=now1
+        self.today_gnss=date2doy(datetime.date(now1.year,now1.month,now1.day))
+
+
+    def names_file_target(self,id_doy,bases): # define os nomes dos arquivos para busca
+        # Cascavel: prcv , Maringá: prma, Curitiba:ufpr e Guarapuava:prgu
+        file_target = []
+        i=0
+        for interador in bases:
+            if bases[i]=='Cascavel - prcv':
+                file_target.append('prcv'+str(id_doy)+"1"+".zip")
+            elif  bases[i]=='Maringá - prma':
+                file_target.append('prma'+str(id_doy)+"1"+".zip")
+            elif  bases[i]=='Curitiba - ufpr':
+                file_target.append('ufpr'+str(id_doy)+"1"+".zip")
+            elif bases[i]=='Guarapuava - prgu':
+                file_target.append('prgu'+str(id_doy)+"1"+".zip")
+            else:
+                pass
+
+        return file_target
+
+
+    def convert_to_doy(self,date):
+        first_day = datetime.date(date.year, 1, 1)
+        delta = date - first_day
+        return delta.days + 1
+
+
+    def logs_info(mensagem): #log de informação
+        logging.info(mensagem)
+
+    def logs_bug(nome_variavel,variavel):  # log para debug, utilizado somente em desenvolvimento
+        logging.debug('debug '+nome_variavel+': '+variavel)
+
+
+
+
     def bissexto(folderYear):  # verificação para ver se o ano é bissexto
         """ retorno booleano verdadeiro se o ano é bissexto"""
         year = int(folderYear)
@@ -99,68 +124,8 @@ class RbmcLib():
         else:
             return False
 
-    def id_target_function(day_delay,delay=True): # define o alvo
-        """ Retorna id_target (identificação do dia alvo)"""
-        if delay:
-            now = datetime.datetime.now()
-            today_gnss=int(date2doy(datetime.date(now.year,now.month,now.day)))
-            day_target=today_gnss-day_delay
-        else:
-            day_target=day_delay
-
-    # definindo o id_target
-        if day_target<100 and day_target>=10 and day_target>0:
-            id_target="0"+str(day_target)
-        elif day_target>=100:
-            id_target=str(day_target)
-        else:
-            id_target="00"+str(day_target)
 
 
-    # em casos de virada de ano
-        if day_target == 0:
-            if bissexto(folderYear):
-                day_target=366
-                id_target=str(day_target)
-            else:
-                day_target=365
-                id_target=str(day_target)
-
-
-        if day_target<0:
-            if bissexto(folderYear):
-                day_target=366+day_target
-
-            else:
-                day_target=366+day_target
-
-
-        if day_target<100 and day_target>=10 and day_target>0:
-            id_target="0"+str(day_target)
-        elif day_target>=100:
-            id_target=str(day_target)
-        else:
-            id_target="00"+str(day_target)
-
-        return id_target
-
-
-    def local_bases_folders(path_root,folderYear): # define as pastas locais referentes as bases
-        i1=0
-        for path in baseFolder:
-            if not os.path.exists(os.path.join(path_root,folderYear,baseFolder[i1])):
-                os.makedirs(os.path.join(path_root,folderYear,baseFolder[i1]))
-            i1=i1+1
-
-    def names_file_target(id_target): # define os nomes dos arquivos para busca
-        # Cascavel: prcv , Maringá: prma, Curitiba:ufpr e Guarapuava:prgu
-        global sigla
-        sufix_file=id_target+"1"+".zip"
-        i=0
-        for sigs in sigla:
-            file_target.append(sigla[i]+sufix_file)
-            i =i+1
-        return file_target
 
     def download_ftp(address,paths_bases_globais_list,folderYear,id_target,file_target,i,prin=True): # metodo para download da rbmc
 
@@ -197,31 +162,7 @@ class RbmcLib():
         ftp.quit()
 
 
-    def paths_bases_globais(path_root,folderYear,prin=True):# define os endereços locais absolutos
-        paths_bases_globais_list=[]
-        del paths_bases_globais_list[:]
 
-        logs_bug("folderYear in rotina manual: ", folderYear)
-        logs_bug("listdir(path_root) ", str((len(os.listdir(path_root)))))
-
-        for ano in range(len(os.listdir(path_root))):
-            logs_bug("folder year in ano_var ", str(folderYear))
-            i=0
-            for p in baseFolder:
-                try:
-                    paths_bases_globais0=os.path.join(path_root,str(folderYear),baseFolder[i])
-                    logs_bug("paths_bases_globais0: ", paths_bases_globais0)
-                    p1 = Path(paths_bases_globais0)
-                    logs_bug("objeto path: ", str(p1))
-                    paths_bases_globais_list.append(p1.resolve())
-                    logs_bug("paths_bases_globais_list: ", str(paths_bases_globais_list[i]))
-                    logs_bug("p1 resolve ", str(p1.resolve()))
-                except FileNotFoundError:
-                    pass
-                i = i+1
-            logs_bug('paths_bases_globais_list',str(paths_bases_globais_list))
-            folderYear = int(folderYear)-1
-        return paths_bases_globais_list
 
     def extracts(paths_extracts,paths_bases_globais_list,file_target,prin=True): # define a descompactação do zip
         j=0

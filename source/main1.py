@@ -39,10 +39,13 @@ def update():
         l7.config(text=i1.today_gnss)
         # l8.config(text=i)
         # i=i+1
-def calButtonMouse(event):
+def calButtonMouse(*args):
     cal1=cal.selection_get()
     l11.config(text=str(cal1.day)+"/"+str(cal1.month)+'/'+str(cal1.year))
     l13.config(text=str(i1.convert_to_doy(cal1)))
+    cal2=i1.convert_to_doy(cal1)
+
+    return cal2
 
 #funcionalidades dos botões
 
@@ -77,9 +80,8 @@ def add_button_text():
         bases_escolhidas.append(c1.get())
         tags_vetor.append(canvas.create_text(x_text_canvas,y_text_canvas,font="Times 12 italic bold",text=bases_escolhidas[-1],tag=str(tags_bases)))
         tags_bases=tags_vetor[-1]
-        print(str(tags_vetor))
-        print(str(tags_bases))
         y_text_canvas=y_text_canvas+20
+
 
 def revomer_button_todos():
 
@@ -113,6 +115,21 @@ def revomer_button():
     print(str(tags_vetor))
 
 
+def download_button():
+    lista=[]
+    global bases_escolhidas
+    cal2=calButtonMouse()
+    if cal2>10 and cal2<100:
+        cal2="0"+str(cal2)
+    elif cal2<10:
+        cal2="00"+str(cal2)
+    else:
+        cal2=str(cal2)
+    print(cal2)
+    lista=i1.names_file_target(cal2,bases_escolhidas)
+    print(lista)
+    # download_ftp("geoftp.ibge.gov.br",paths_bases_globais_list,folderYear,id_target,file_target,i)
+    # i1.download_ftp(geoftp.ibge.gov.br,)
 
 
 i1=autoRmbclib1.RbmcLib()
@@ -176,11 +193,11 @@ b2=Button(frame1,text="Salvar em:",command=browse_button)
 
 b4=Button(frame6,text="Remover",command=revomer_button)
 b5=Button(frame6,text="Remover todos",command=revomer_button_todos)
-b6=Button(frame6,text="Download",font=("Helvetica", 10),fg="red")
+b6=Button(frame6,text="Download",font=("Helvetica", 10),fg="red",command=download_button)
 
 #frame1
 b1.grid(row=2,column=4,pady=5)#Adicionar
-b2.grid(row=4,column=4,pady=5)#Salvar em:
+b2.grid(row=4,column=4,pady=5)#Salvar em:,
 # b3.grid(row=6,column=4,pady=5)#Extrair em:
 
 #frame6
