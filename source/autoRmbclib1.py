@@ -27,7 +27,7 @@ import threading
 # day = 0
 # folderYear = 0
 # path = []
-# paths_bases_globais_list = []
+# paths_local_destino = []
 # folderYear = ''
 # id_target = ''
 #
@@ -127,7 +127,7 @@ class RbmcLib():
 
 
 
-    def download_ftp(address,paths_bases_globais_list,folderYear,id_target,file_target,i,prin=True): # metodo para download da rbmc
+    def download_ftp(address,paths_local_destino,folderYear,id_target,file_target,i,prin=True): # metodo para download da rbmc
 
 
         site_address=address
@@ -138,9 +138,9 @@ class RbmcLib():
             print (str(dir_cwd))
             print('\nConectado em ftp://geoftp.ibge.gov.br \n')
         ftp.cwd(str(dir_cwd))
-        p = open(str(os.path.join(paths_bases_globais_list[i],file_target[i])), "wb")
+        p = open(str(os.path.join(paths_local_destino,file_target[i])), "wb")
         if prin:
-            print('Downloading file '+file_target[i]+' para '+str(paths_bases_globais_list[i]))
+            print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
         try:
             ftp.retrbinary("RETR " + file_target[i], p.write)
             p.close()
@@ -151,8 +151,8 @@ class RbmcLib():
                 print('Arquivo '+file_target[i]+' não encontrado no servidor\n')
             logs_info('Arquivo '+file_target[i]+' não encontrado no servidor\n')
             p.close()
-            os.remove(os.path.join(paths_bases_globais_list[i],file_target[i]))
-            logs_bug("remove: path ",str(paths_bases_globais_list[i]))
+            os.remove(os.path.join(paths_local_destino[i],file_target[i]))
+            logs_bug("remove: path ",str(paths_local_destino[i]))
 
         except TimeoutError:
             print('tempo de conexao expirado')
@@ -164,25 +164,25 @@ class RbmcLib():
 
 
 
-    def extracts(paths_extracts,paths_bases_globais_list,file_target,prin=True): # define a descompactação do zip
+    def extracts(paths_extracts,paths_local_destino,file_target,prin=True): # define a descompactação do zip
         j=0
         for b in baseFolder:
-            if not os.path.exists(os.path.join(str(paths_bases_globais_list[j]),"extracts")):
-                os.makedirs(os.path.join(str(paths_bases_globais_list[j]),"extracts"))
-            paths_extracts.append(os.path.join(str(paths_bases_globais_list[j]),"extracts"))
+            if not os.path.exists(os.path.join(str(paths_local_destino[j]),"extracts")):
+                os.makedirs(os.path.join(str(paths_local_destino[j]),"extracts"))
+            paths_extracts.append(os.path.join(str(paths_local_destino[j]),"extracts"))
             j=j+1
         i=0
         for z in baseFolder:
 
             try:
-                zip1 = zipfile.ZipFile(str(os.path.join(paths_bases_globais_list[i],file_target[i])))
+                zip1 = zipfile.ZipFile(str(os.path.join(paths_local_destino[i],file_target[i])))
                 zip1.extractall(str(paths_extracts[i]))
                 if prin:
                     print('Extraindo para '+str(paths_extracts[i]))
                 logs_info('Extraido '+file_target[i]+' com sucesso')
                 zip1.close()
             except:
-                os.remove(os.path.join(paths_bases_globais_list[i],file_target[i]))
+                os.remove(os.path.join(paths_local_destino[i],file_target[i]))
                 logs_info('Erro '+file_target[i]+' não encontrado')
             i=i+1
 
@@ -206,13 +206,13 @@ class RbmcLib():
         global folderYear
         global id_target
         global file_target
-        global paths_bases_globais_list
+        global paths_local_destino
         global path_root
 
         day = 0
         folderYear = 0
         path.clear()
-        paths_bases_globais_list.clear()
+        paths_local_destino.clear()
         file_target.clear()
         folderYear = ''
         id_target = ''
@@ -224,7 +224,7 @@ class RbmcLib():
         global folderYear
         global id_target
         global file_target
-        global paths_bases_globais_list
+        global paths_local_destino
         global path_root
 
         reset_folders()
@@ -236,7 +236,7 @@ class RbmcLib():
             id_target = id_target_function((conversao_dia(dia, mes, ano)), delay=False)
             file_target = names_file_target(id_target)
             logs_bug("file_target in rotina manual", str(file_target))
-            paths_bases_globais_list = paths_bases_globais(path_root, folderYear)
+            paths_local_destino = paths_bases_globais(path_root, folderYear)
 
         else:
 
@@ -244,7 +244,7 @@ class RbmcLib():
             local_bases_folders(path_root,folderYear)
             id_target=id_target_function(day)
             file_target=names_file_target(id_target)
-            paths_bases_globais_list=paths_bases_globais(path_root,folderYear)
+            paths_local_destino=paths_bases_globais(path_root,folderYear)
 
 
 
@@ -254,7 +254,7 @@ class RbmcLib():
         global folderYear
         global id_target
         global file_target
-        global paths_bases_globais_list
+        global paths_local_destino
         global path_root
 
         setup_folders_files()
@@ -264,8 +264,8 @@ class RbmcLib():
             soma_files=0
             i=0
 
-            for b1 in paths_bases_globais_list:
-                list_dir=paths_bases_globais_list[i]
+            for b1 in paths_local_destino:
+                list_dir=paths_local_destino[i]
                 try:
                     list_dir_file=os.listdir(list_dir)
                 except FileNotFoundError:
@@ -276,7 +276,7 @@ class RbmcLib():
                     pass
                 number_files = len(list_dir_file)
                 soma_files=number_files+soma_files
-                logs_bug('path',str(paths_bases_globais_list[i]))
+                logs_bug('path',str(paths_local_destino[i]))
                 logs_bug('number_files',str(number_files))
                 logs_bug('soma_files',str(soma_files))
                 i=i+1
@@ -297,23 +297,23 @@ class RbmcLib():
                 else:
                     id_target=id_target_function(day,delay=False)   #delay False utilizado para testes
                 file_target = names_file_target(id_target)
-                paths_bases_globais_list = paths_bases_globais(path_root, folderYear)
+                paths_local_destino = paths_bases_globais(path_root, folderYear)
                 i=-1
 
                 for exist in baseFolder:
                     i=i+1
-                    logs_bug("paths é arquivo?",os.path.join(paths_bases_globais_list[i],file_target[i]))
-                    logs_bug("is file",str(os.path.isfile(os.path.join(paths_bases_globais_list[i],file_target[i]))))
-                    if not os.path.isfile(os.path.join(paths_bases_globais_list[i],file_target[i])):
-                        logs_bug("fez download",str(os.path.isfile(os.path.join(paths_bases_globais_list[i],file_target[i]))))
+                    logs_bug("paths é arquivo?",os.path.join(paths_local_destino[i],file_target[i]))
+                    logs_bug("is file",str(os.path.isfile(os.path.join(paths_local_destino[i],file_target[i]))))
+                    if not os.path.isfile(os.path.join(paths_local_destino[i],file_target[i])):
+                        logs_bug("fez download",str(os.path.isfile(os.path.join(paths_local_destino[i],file_target[i]))))
                         if not only_check:
                             try:
                                 if prin:
-                                    download_ftp("geoftp.ibge.gov.br",paths_bases_globais_list,folderYear,id_target,file_target,i)
-                                    extracts(paths_extracts,paths_bases_globais_list,file_target)
+                                    download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i)
+                                    extracts(paths_extracts,paths_local_destino,file_target)
                                 else:
-                                    download_ftp("geoftp.ibge.gov.br",paths_bases_globais_list,folderYear,id_target,file_target,i,prin=False)
-                                    extracts(paths_extracts,paths_bases_globais_list,file_target,prin=False)
+                                    download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i,prin=False)
+                                    extracts(paths_extracts,paths_local_destino,file_target,prin=False)
                                     paths_extracts.clear()
                             except gaierror:
                                 if prin:
@@ -325,9 +325,9 @@ class RbmcLib():
                                     print('Arquivo '+str(file_target[i])+' não encontrado')
                             # try:)
                             #     if prin:
-                            #         extracts(paths_extracts,paths_bases_globais_list,file_target)
+                            #         extracts(paths_extracts,paths_local_destino,file_target)
                             #     else:
-                            #         extracts(paths_extracts,paths_bases_globais_list,file_target,prin=False)
+                            #         extracts(paths_extracts,paths_local_destino,file_target,prin=False)
 
                             except FileNotFoundError:
                                 pass
@@ -335,7 +335,7 @@ class RbmcLib():
                                 pass
                     else:
                         pass
-                    logs_info('Arquivo da base '+str(file_target[i])+' existente em: '+str(paths_bases_globais_list[i]))
+                    logs_info('Arquivo da base '+str(file_target[i])+' existente em: '+str(paths_local_destino[i]))
 
                 day=day+1
 
@@ -345,7 +345,7 @@ class RbmcLib():
         global folderYear
         global id_target
         global file_target
-        global paths_bases_globais_list
+        global paths_local_destino
         global path_root
 
         setup_folders_files(dia,mes,ano,manual=True)
@@ -353,10 +353,10 @@ class RbmcLib():
 
         for exist in baseFolder:
             i=i+1
-            logs_bug('paths_bases_globais_list[i]',str(paths_bases_globais_list[i]))
-            if not os.path.isfile(os.path.join(paths_bases_globais_list[i],file_target[i])):
+            logs_bug('paths_local_destino[i]',str(paths_local_destino[i]))
+            if not os.path.isfile(os.path.join(paths_local_destino[i],file_target[i])):
                 try:
-                    download_ftp("geoftp.ibge.gov.br",paths_bases_globais_list,folderYear,id_target,file_target,i)
+                    download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i)
                 except gaierror:
                     print('Sem conexão com o servidor ftp://geoftp.ibge.gov.br')
                     logs_info('Sem conexão com servidor ftp://geoftp.ibge.gov.br')
@@ -364,14 +364,14 @@ class RbmcLib():
                     logs_info('Arquivo '+file_target[i]+' não encontrado')
                     print('Arquivo '+file_target[i]+' não encontrado')
                 try:
-                    extracts(paths_extracts,paths_bases_globais_list,file_target)
+                    extracts(paths_extracts,paths_local_destino,file_target)
                     paths_extracts.clear()
                 except FileNotFoundError:
                     pass
                 except zipfile.BadZipFile:
                     logs_info('Arquivo '+file_target[i]+' não encontrado para extraçao')
                     print('Erro de extração de dados, FileNotFoundError')
-            print('Arquivo da base '+file_target[i]+' existente em '+str(paths_bases_globais_list[i]))
+            print('Arquivo da base '+file_target[i]+' existente em '+str(paths_local_destino[i]))
 
         reset_folders()
 
@@ -470,9 +470,9 @@ class RbmcLib():
         time.sleep(2)
         setup_folders_files()
         i=-1
-        for ai in paths_bases_globais_list:
+        for ai in paths_local_destino:
             i=i+1
-            path.append(paths_bases_globais_list[i])
+            path.append(paths_local_destino[i])
             try:
                 print('\nArquivos contidos em: '+str(path[i])+str(os.listdir(path[i])))
                 logs_info('Arquivos contidos em: '+str(path[i])+str(os.listdir(path[i])))

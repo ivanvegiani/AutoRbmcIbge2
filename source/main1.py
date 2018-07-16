@@ -24,12 +24,21 @@ import threading
 import tkcalendar
 import locale
 
-
+root=Tk()
+#configurações iniciais
 y_text_canvas=10
 x_text_canvas=70
 bases_escolhidas=[]
 tags_bases=0
 tags_vetor=[]
+version="versão 2.0"
+i1=autoRmbclib1.RbmcLib()
+now1 = i1.now1
+year=str(now1.year)
+month=str(now1.month)
+day=str(now1.day)
+local_folders=StringVar()
+local_folders.set("")
 
 
 def update():
@@ -39,13 +48,13 @@ def update():
         l7.config(text=i1.today_gnss)
         # l8.config(text=i)
         # i=i+1
+
 def calButtonMouse(*args):
     cal1=cal.selection_get()
     l11.config(text=str(cal1.day)+"/"+str(cal1.month)+'/'+str(cal1.year))
     l13.config(text=str(i1.convert_to_doy(cal1)))
-    cal2=i1.convert_to_doy(cal1)
 
-    return cal2
+    return cal1
 
 #funcionalidades dos botões
 
@@ -65,8 +74,6 @@ def add_button_text():
     global bases_escolhidas
     global tags_bases
     global tags_vetor
-
-
 
     bb1=True
     aa1=c1.get()
@@ -116,34 +123,34 @@ def revomer_button():
 
 
 def download_button():
+
     lista=[]
     global bases_escolhidas
-    cal2=calButtonMouse()
-    if cal2>10 and cal2<100:
-        cal2="0"+str(cal2)
-    elif cal2<10:
-        cal2="00"+str(cal2)
+    global local_folders
+    cal1=calButtonMouse()
+    cal2_converted=i1.convert_to_doy(cal1)
+    # verificação se foi seleciando pelo menos uma data
+    string_data_corrente="%s%s%s" %(day,month,year)
+    string_cal1=str(cal1.day)+str(cal1.month)+str(cal1.year)
+    if string_cal1==string_data_corrente:
+        print("Aqui vai uma mensagem de alerta, favor selecionar a data de levantamento")
+
+    if cal2_converted>10 and cal2_converted<100:
+        cal2_converted="0"+str(cal2)
+    elif cal2_converted<10:
+        cal2_converted="00"+str(cal2_converted)
     else:
-        cal2=str(cal2)
-    print(cal2)
-    lista=i1.names_file_target(cal2,bases_escolhidas)
-    print(lista)
-    # download_ftp("geoftp.ibge.gov.br",paths_bases_globais_list,folderYear,id_target,file_target,i)
-    # i1.download_ftp(geoftp.ibge.gov.br,)
+        cal2_converted=str(cal2_converted)
+
+    file_target=i1.names_file_target(cal2_converted,bases_escolhidas)
+    print(file_target)
+    # download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i)
+    # i1.download_ftp(geoftp.ibge.gov.br,local_folders.get(),cal1.year)
 
 
-i1=autoRmbclib1.RbmcLib()
 
 #
-root=Tk()
-#configurações iniciais
-version="versão 2.0"
-now1 = i1.now1
-year=str(now1.year)
-month=str(now1.month)
-day=str(now1.day)
-local_folders=StringVar()
-local_folders.set("")
+
 
 #Threading de update
 clock = threading.Timer(30, update)
