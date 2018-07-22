@@ -142,8 +142,8 @@ def download_button():
     else:
         cal2_converted=str(cal2_converted)
 
-    file_target=i1.names_file_target(cal2_converted,bases_escolhidas)
-    print(file_target)
+    bases_escolhidas=i1.names_file_target(cal2_converted,bases_escolhidas)
+    print(bases_escolhidas)
     # download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i)
     # i1.download_ftp(geoftp.ibge.gov.br,local_folders.get(),cal1.year)
 
