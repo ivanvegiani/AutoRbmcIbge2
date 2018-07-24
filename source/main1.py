@@ -77,7 +77,6 @@ def add_button_text():
 
     bb1=True
     aa1=c1.get()
-
     i=0
     for j in bases_escolhidas:
         if aa1==bases_escolhidas[i]:
@@ -88,6 +87,7 @@ def add_button_text():
         tags_vetor.append(canvas.create_text(x_text_canvas,y_text_canvas,font="Times 12 italic bold",text=bases_escolhidas[-1],tag=str(tags_bases)))
         tags_bases=tags_vetor[-1]
         y_text_canvas=y_text_canvas+20
+    print(bases_escolhidas)
 
 
 def revomer_button_todos():
@@ -124,9 +124,9 @@ def revomer_button():
 
 def download_button():
 
-    lista=[]
     global bases_escolhidas
     global local_folders
+    bases_escolhidas_download=[]
     cal1=calButtonMouse()
     cal2_converted=i1.convert_to_doy(cal1)
     # verificação se foi seleciando pelo menos uma data
@@ -135,21 +135,22 @@ def download_button():
     if string_cal1==string_data_corrente:
         print("Aqui vai uma mensagem de alerta, favor selecionar a data de levantamento")
 
-    if cal2_converted>10 and cal2_converted<100:
-        cal2_converted="0"+str(cal2)
+    if cal2_converted>=10 and cal2_converted<100:
+        cal2_converted="0"+str(cal2_converted)
     elif cal2_converted<10:
         cal2_converted="00"+str(cal2_converted)
     else:
         cal2_converted=str(cal2_converted)
 
-    bases_escolhidas=i1.names_file_target(cal2_converted,bases_escolhidas)
-    print(bases_escolhidas)
-    # download_ftp("geoftp.ibge.gov.br",paths_local_destino,folderYear,id_target,file_target,i)
-    # i1.download_ftp(geoftp.ibge.gov.br,local_folders.get(),cal1.year)
-
-
-
-#
+    bases_escolhidas_download=i1.names_file_target(cal2_converted,bases_escolhidas)
+    id_target=cal2_converted
+    print(bases_escolhidas_download)
+    print(id_target)
+    i=0
+    for j in bases_escolhidas:
+        i1.download_ftp(local_folders.get(),cal1.year,id_target,bases_escolhidas_download,i)
+        print(bases_escolhidas[i])
+        i=i+1
 
 
 #Threading de update

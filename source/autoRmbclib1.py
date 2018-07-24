@@ -97,7 +97,7 @@ class RbmcLib():
                 file_target.append('prgu'+str(id_doy)+"1"+".zip")
             else:
                 pass
-
+            i=i+1
         return file_target
 
 
@@ -127,37 +127,30 @@ class RbmcLib():
 
 
 
-    def download_ftp(address,paths_local_destino,folderYear,id_target,file_target,i,prin=True): # metodo para download da rbmc
+    def download_ftp(self,paths_local_destino,folderYear,id_target,file_target,i): # metodo para download da rbmc
 
-
-        site_address=address
-        ftp=ftplib.FTP(site_address)
+        ftp=ftplib.FTP('geoftp.ibge.gov.br')
         ftp.login()
-        dir_cwd = str("informacoes_sobre_posicionamento_geodesico/rbmc/dados"+'/'+folderYear+"/"+id_target)
-        if prin:
-            print (str(dir_cwd))
-            print('\nConectado em ftp://geoftp.ibge.gov.br \n')
+        dir_cwd = ("informacoes_sobre_posicionamento_geodesico/rbmc/dados"+'/'+str(folderYear)+"/"+str(id_target))
+
+        print (dir_cwd)
+        print('\nConectado em ftp://geoftp.ibge.gov.br \n')
         ftp.cwd(str(dir_cwd))
         p = open(str(os.path.join(paths_local_destino,file_target[i])), "wb")
-        if prin:
-            print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
+        print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
         try:
             ftp.retrbinary("RETR " + file_target[i], p.write)
             p.close()
-            if prin:
-                print('Download file '+file_target[i]+' sucess\n')
+            print('Download file '+file_target[i]+' sucess\n')
         except ftplib.error_perm:
-            if prin:
-                print('Arquivo '+file_target[i]+' não encontrado no servidor\n')
-            logs_info('Arquivo '+file_target[i]+' não encontrado no servidor\n')
+
+            print('Arquivo '+file_target[i]+' não encontrado no servidor\n')
             p.close()
             os.remove(os.path.join(paths_local_destino[i],file_target[i]))
-            logs_bug("remove: path ",str(paths_local_destino[i]))
 
         except TimeoutError:
             print('tempo de conexao expirado')
-            logs_info('tempo de conexao expirado')
-        logs_info('Download file '+file_target[i]+' sucess')
+
 
         ftp.quit()
 
