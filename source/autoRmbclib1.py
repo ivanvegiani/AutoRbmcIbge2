@@ -1,17 +1,12 @@
+# coding: utf-8
 
 
 
-import os
-import time
 import datetime
-import zipfile
 import ftplib
 from pathlib import Path
 from socket import gaierror
-import logging
-import threading
-from tkinter import*
-from tkinter import ttk
+
 
 
 # Configurações iniciais
@@ -94,13 +89,13 @@ class RbmcLib():
         i=0
         for interador in bases:
             if bases[i]=='Cascavel - prcv':
-                file_target.append('prcv'+str(id_doy)+"1"+".zip")
+                file_target.append('prcv'+str(id_doy[i])+"1"+".zip")
             elif  bases[i]=='Maringá - prma':
-                file_target.append('prma'+str(id_doy)+"1"+".zip")
+                file_target.append('prma'+str(id_doy[i])+"1"+".zip")
             elif  bases[i]=='Curitiba - ufpr':
-                file_target.append('ufpr'+str(id_doy)+"1"+".zip")
+                file_target.append('ufpr'+str(id_doy[i])+"1"+".zip")
             elif bases[i]=='Guarapuava - prgu':
-                file_target.append('prgu'+str(id_doy)+"1"+".zip")
+                file_target.append('prgu'+str(id_doy[i])+"1"+".zip")
             else:
                 pass
             i=i+1
@@ -138,36 +133,16 @@ class RbmcLib():
         ftp=ftplib.FTP('geoftp.ibge.gov.br')
         ftp.login()
         dir_cwd = ("informacoes_sobre_posicionamento_geodesico/rbmc/dados"+'/'+str(folderYear)+"/"+str(id_target))
-
         print('\nConectado em ftp://geoftp.ibge.gov.br \n')
-
-        try:
-            ftp.cwd(str(dir_cwd))
-        except ftplib.error_perm:
-            pass
-
-        try:
-            p = open(str(os.path.join(paths_local_destino,file_target[i])), "wb")
-            print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
-        except IndexError:
-            pass
-        # self.fileSize=ftp.size(file_target[i])
+        ftp.cwd(str(dir_cwd))
+        p = open(str(os.path.join(paths_local_destino,file_target[i])), "wb")
+        print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
 
         def callback_custom(block):
             p.write(block)
 
-
-        try:
-            ftp.retrbinary("RETR " + file_target[i], callback_custom)
-            p.close()
-            print('Download file '+file_target[i]+' sucess\n')
-        except ftplib.error_perm:
-            print('Arquivo '+file_target[i]+' não encontrado no servidor\n')
-            p.close()
-
-
-        except TimeoutError:
-            print('tempo de conexao expirado')
-
+        ftp.retrbinary("RETR " + file_target[i], callback_custom)
+        p.close()
+        print('Download file '+file_target[i]+' sucess\n')
 
         ftp.quit()

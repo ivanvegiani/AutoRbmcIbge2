@@ -24,6 +24,11 @@ import datetime
 import threading
 import tkcalendar
 import locale
+import datetime
+import ftplib
+from pathlib import Path
+import socket
+from socket import gaierror
 
 
 
@@ -37,6 +42,7 @@ bases_escolhidas=[]
 tags_bases=0
 tags_vetor=[]
 version="versão 2.0"
+dataEscolhida=[]
 
 os1=os.name
 if os.name=="nt":
@@ -45,21 +51,6 @@ else:
     # root.iconbitmap("@alvo2.xbm") // desisto, não esta funcionando no linux
     pass
 
-
-def reset():
-
-    global globaly_text_canvas
-    global x_text_canvas
-    global bases_escolhidas
-    global tags_bases
-    global tags_vetor
-    global version
-    y_text_canvas=10
-    x_text_canvas=10
-    tags_bases=0
-    tags_vetor=[]
-    version="versão 2.0"
-    bases_escolhidas.clear()
 
 
 def update():
@@ -95,24 +86,33 @@ def add_button_text():
     global bases_escolhidas
     global tags_bases
     global tags_vetor
+    global dataEscolhida
+    dataText=[]
     x_text_canvas=10
-    dataText=['']
+
 
     bb1=True
     aa1=c1.get()
-
+    bb1=cal.selection_get()
     i=0
+
+    hoje="%s%s%s" %(day,month,year)
+    inicio_cal1=str(cal.selection_get().day)+str(cal.selection_get().month)+str(cal.selection_get().year)
+    if hoje==inicio_cal1:
+        tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR A DATA DO LEVANTAMENTO')
+        return False
+
     for j in bases_escolhidas:
-        if aa1==bases_escolhidas[i]:
+        if aa1==bases_escolhidas[i] and bb1==dataEscolhida[i]:
             bb1=False
         i=i+1
     if bb1:
         bases_escolhidas.append(c1.get())
+        dataEscolhida.append(cal.selection_get())
         dataText.append(str(cal.selection_get().day)+"/"+str(cal.selection_get().month)+"/"+str(cal.selection_get().year))
         tags_vetor.append(canvas.create_text(x_text_canvas,y_text_canvas,anchor='w',justify='center', font="Times 12 italic bold",text=bases_escolhidas[-1]+"          "+str(dataText[-1]),tag=str(tags_bases)))
         tags_bases=tags_vetor[-1]
         y_text_canvas=y_text_canvas+20
-
 
 
 def revomer_button_todos():
@@ -125,7 +125,7 @@ def revomer_button_todos():
     y_text_canvas=10
     x_text_canvas=70
     global bases_escolhidas
-
+    dataEscolhida.clear()
     bases_escolhidas.clear()
     canvas.delete(ALL)
     canvas.update()
@@ -140,6 +140,7 @@ def revomer_button():
     y_text_canvas=y_text_canvas-20
     try:
         bases_escolhidas.pop(-1)
+        dataEscolhida.pop(-1)
     except IndexError:
         pass
     canvas.delete(tags_vetor[tags_bases-1])
@@ -152,21 +153,19 @@ def download_button():
 
 def threading_download():
 
-
+    global dataText
     global bases_escolhidas
     global local_folders
     bases_escolhidas_download=[]
-    cal1=calButtonMouse()
-    cal2_converted=i1.convert_to_doy(cal1)
+    global dataEscolhida
 
-    # verificação se foi seleciando pelo menos uma data
-    string_data_corrente="%s%s%s" %(day,month,year)
-    string_cal1=str(cal1.day)+str(cal1.month)+str(cal1.year)
 
     # mensagens de falta de parâmetros
+    hoje="%s%s%s" %(day,month,year)
+    inicio_cal1=str(cal.selection_get().day)+str(cal.selection_get().month)+str(cal.selection_get().year)
 
-    if string_cal1==string_data_corrente:
-        tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR A DATA DO LEVANTAMENTO (não pode ser a data de hoje)')
+    if hoje==inicio_cal1:
+        tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR A DATA DO LEVANTAMENTO')
         return False
         # try:
         #     root.destroy()
@@ -192,27 +191,44 @@ def threading_download():
         #     pass
         # root=Tk()
 
-    if cal2_converted>=10 and cal2_converted<100:
-        cal2_converted="0"+str(cal2_converted)
-    elif cal2_converted<10:
-        cal2_converted="00"+str(cal2_converted)
-    else:
-        cal2_converted=str(cal2_converted)
+    # cal1=calButtonMouse()
+    cal2_converted=[]
 
-    bases_escolhidas_download=i1.names_file_target(cal2_converted,bases_escolhidas)
-    id_target=cal2_converted
+    i=0
+    for interage in dataEscolhida:
+        cal2_converted.append(i1.convert_to_doy(dataEscolhida[i]))
+        i=i+1
 
     i=0
 
+    for interador in cal2_converted:
 
+        if (cal2_converted[i]>=10) and (cal2_converted[i]<100):
+            cal2_converted[i]="0"+str(cal2_converted[i])
+            cal2_converted[i]=int(cal2_converted[i])
+        elif cal2_converted[i]<10:
+            cal2_converted[i]="00"+str(cal2_converted[i])
+            cal2_converted[i]=int(cal2_converted[i])
+        else:
+            pass
+        i=+1
+
+
+    bases_escolhidas_download=i1.names_file_target(cal2_converted,bases_escolhidas)
+
+
+    i=0
     for j in bases_escolhidas:
-        i1.download_ftp(local_folders.get(),cal1.year,id_target,bases_escolhidas_download,i)
-        tkinter.messagebox.showinfo('Sucesso','Concluído download ' +str(bases_escolhidas_download[i]+' com sucesso!'))
+        try:
+            i1.download_ftp(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
+            tkinter.messagebox.showinfo('Sucesso','Concluído download ' +str(bases_escolhidas_download[i]+' com sucesso!'))
+        except ftplib.error_perm:
+            tkinter.messagebox.showerror('ERRO','Arquivo '+str(bases_escolhidas_download[i]+' não encontrado no servidor'))
+        except socket.gaierror:
+            tkinter.messagebox.showerror('ERRO','Sem conexão com servidor')
+
+
         i=i+1
-
-
-
-reset()
 i1=autoRmbclib1.RbmcLib()
 now1 = i1.now1
 year=str(now1.year)
