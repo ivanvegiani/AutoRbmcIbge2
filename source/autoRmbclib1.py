@@ -6,7 +6,7 @@ import datetime
 import ftplib
 from pathlib import Path
 from socket import gaierror
-
+import os
 
 
 # Configurações iniciais

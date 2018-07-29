@@ -46,7 +46,7 @@ dataEscolhida=[]
 
 os1=os.name
 if os.name=="nt":
-    root.iconbitmap("alvo.ico")
+    root.iconbitmap("D:\Python\envAutoRmbcIbge2\AutoRbmcIbge2\source\\alvo.ico")
 else:
     # root.iconbitmap("@alvo2.xbm") // desisto, não esta funcionando no linux
     pass

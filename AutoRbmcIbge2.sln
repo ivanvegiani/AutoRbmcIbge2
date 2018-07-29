@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "AutoRbmcIbge2", "AutoRbmcIbge2.pyproj", "{0630304D-8AFE-4966-AD19-0F794628B784}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0630304D-8AFE-4966-AD19-0F794628B784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0630304D-8AFE-4966-AD19-0F794628B784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {703B7CC1-C707-4A5F-B889-C1A0B813AA34}
+	EndGlobalSection
+EndGlobal
