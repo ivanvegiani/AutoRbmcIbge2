@@ -2,9 +2,9 @@
 
 ## Objetivo
 
-Executar downloads da RBMC Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS do site do IBGE de forma prática e fácil.
+Software não oficial do IBGE. Tem a função de executar downloads da RBMC (Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS) do site de forma prática e fácil.
 Não precisando saber o dia do ano e nem as siglas das bases.
-Somente por enquanto, implementado as bases do Paraná.
+Somente por enquanto, foi implementado as bases do Paraná.Em um projeto futuro, será implementado todas as bases do Brasil.
 
 
 
