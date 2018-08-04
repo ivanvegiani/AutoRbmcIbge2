@@ -1,3 +1,0 @@
-Parei na linha 148 arquivo main1.py
-Implementar o id_target
-Implementar o dir_cwd, ver site.
