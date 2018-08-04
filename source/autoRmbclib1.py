@@ -7,6 +7,10 @@ import ftplib
 from pathlib import Path
 from socket import gaierror
 import os
+from tkinter import*
+from tkinter import ttk
+import threading
+
 
 
 # Configurações iniciais
@@ -73,7 +77,7 @@ def folder_year_function(day_delay):  # define a pasta local relativo ao ano
 
 class RbmcLib():
 
-    fileSize=0
+
 
 
 
@@ -126,23 +130,30 @@ class RbmcLib():
             return False
 
 
+    def fileSize(self,paths_local_destino,folderYear,id_target,file_target,i):
+        temp=0
+        ftp=ftplib.FTP('geoftp.ibge.gov.br')
+        ftp.login()
+        dir_cwd = ("informacoes_sobre_posicionamento_geodesico/rbmc/dados"+'/'+str(folderYear)+"/"+str(id_target))
+        ftp.cwd(str(dir_cwd))
+        temp=ftp.size(file_target[i])
+        ftp.quit()
+        return temp
+
 
 
     def download_ftp(self,paths_local_destino,folderYear,id_target,file_target,i): # metodo para download da rbmc
 
+        def call_back(block):
+            #
+            # print(statinfo.st_size)
+            p.write(block)
+
         ftp=ftplib.FTP('geoftp.ibge.gov.br')
         ftp.login()
         dir_cwd = ("informacoes_sobre_posicionamento_geodesico/rbmc/dados"+'/'+str(folderYear)+"/"+str(id_target))
-        print('\nConectado em ftp://geoftp.ibge.gov.br \n')
         ftp.cwd(str(dir_cwd))
         p = open(str(os.path.join(paths_local_destino,file_target[i])), "wb")
-        print('Downloading file '+file_target[i]+' para '+str(paths_local_destino))
-
-        def callback_custom(block):
-            p.write(block)
-
-        ftp.retrbinary("RETR " + file_target[i], callback_custom)
+        ftp.retrbinary("RETR " + file_target[i],call_back)
         p.close()
-        print('Download file '+file_target[i]+' sucess\n')
-
         ftp.quit()

@@ -53,13 +53,7 @@ else:
 
 
 
-def update():
-    while True:
-        time.sleep(30)# tempo de atualização
-        l6.config(text="%s/%s/%s" %(day,month,year))
-        l7.config(text=i1.today_gnss)
-        # l8.config(text=i)
-        # i=i+1
+
 
 def calButtonMouse(*args):
     cal1=cal.selection_get()
@@ -130,7 +124,6 @@ def revomer_button_todos():
     canvas.delete(ALL)
     canvas.update()
 
-
 def revomer_button():
     global tags_bases
     global x_text_canvas
@@ -148,8 +141,16 @@ def revomer_button():
 
 
 def download_button():
-    t3 = threading.Thread(target=threading_download, args=())
-    t3.start()
+    t1 = threading.Thread(target=threading_download, args=())
+    t1.start()
+
+# def progress_bar(bases_escolhidas_download_i):
+#     t2 = threading.Thread(target=threading_progress_bar, args=(bases_escolhidas_download_i,))
+#     t2.start()
+#
+# def threading_progress_bar(bases_escolhidas_download_i):
+#
+
 
 def threading_download():
 
@@ -167,31 +168,16 @@ def threading_download():
     if hoje==inicio_cal1:
         tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR A DATA DO LEVANTAMENTO')
         return False
-        # try:
-        #     root.destroy()
-        # except UnboundLocalError:
-        #     pass
-        # root=Tk()
 
     if local_folders.get()=='':
         tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR O LOCAL ONDE O ARQUIVO SERÁ SALVO EM SEU COMPUTADOR')
         return False
-        # try:
-        #     root.destroy()
-        # except UnboundLocalError:
-        #     pass
-        # root=Tk()
+
 
     if len(bases_escolhidas)==0:
         tkinter.messagebox.showerror("Falta de parâmetros",'FAVOR INFORMAR UMA BASE PARA DOWNLOAD')
         return False
-        # try:
-        #     root.destroy()
-        # except UnboundLocalError:
-        #     pass
-        # root=Tk()
 
-    # cal1=calButtonMouse()
     cal2_converted=[]
 
     i=0
@@ -213,22 +199,50 @@ def threading_download():
             pass
         i=+1
 
+    def threading_gui(bases_escolhidas_download,i):
+
+        frame8=Frame(root)
+        frame8.place(x=350,y=500)# progress bar
+        text1=str(bases_escolhidas_download[i])
+        pb = ttk.Progressbar(frame8, orient="horizontal", length=300, mode="determinate")
+        try:
+            pb["maximum"] =i1.fileSize(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
+        except ftplib.error_perm:
+            pass
+        pb["value"]=0
+        l20=Label(frame8,text=text1,font=("Helvetica", 12))
+        l20.config(text=text1)
+        l20.update_idletasks()
+        l20.grid(row=0,column=0,rowspan=1)
+        pb.grid(row=1,column=0,rowspan=1)
+        while pb["value"]<=pb["maximum"]:
+            try:
+                statinfo = os.stat(str(os.path.join(local_folders.get(),bases_escolhidas_download[i])))
+            except FileNotFoundError:
+                pass
+            pb["value"]=statinfo.st_size
+            pb.update_idletasks()
+        pb["maximum"]=0
+        pb["value"]=0
+        frame8.destroy()
+
 
     bases_escolhidas_download=i1.names_file_target(cal2_converted,bases_escolhidas)
-
 
     i=0
     for j in bases_escolhidas:
         try:
+            t2 = threading.Thread(target=threading_gui, args=(bases_escolhidas_download,i,))
+            t2.start()
             i1.download_ftp(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
             tkinter.messagebox.showinfo('Sucesso','Concluído download ' +str(bases_escolhidas_download[i]+' com sucesso!'))
         except ftplib.error_perm:
             tkinter.messagebox.showerror('ERRO','Arquivo '+str(bases_escolhidas_download[i]+' não encontrado no servidor'))
         except socket.gaierror:
             tkinter.messagebox.showerror('ERRO','Sem conexão com servidor')
-
-
         i=i+1
+
+
 i1=autoRmbclib1.RbmcLib()
 now1 = i1.now1
 year=str(now1.year)
@@ -236,12 +250,10 @@ month=str(now1.month)
 day=str(now1.day)
 local_folders=StringVar()
 local_folders.set("")
-#Threading de update
-clock = threading.Timer(30, update)
-clock.start()
 
-# root.geometry('250x150+0+0')
-root.resizable(width=False, height=False)
+
+root.geometry('900x600')
+root.resizable(width=True, height=True)
 root.title("AutoRbmcIbge2")
 
 frame1=Frame() #superior
@@ -249,25 +261,20 @@ frame2=Frame() # inferior
 frame3=Frame()# canvas
 frame5=Frame()
 frame6=Frame()
-# separador
-separator = ttk.Separator(orient='horizontal')
-separator.grid(row=1,sticky="we")
-separator1 = ttk.Separator(orient='horizontal')
-separator1.grid(row=1,column=1,sticky="we")
-separator2 = ttk.Separator(orient='horizontal')
-separator2.grid(row=1,column=2,sticky="we")
+
+
 
 #frames
-frame1.grid(row=0,column=0)# ComboBox e botoes
-frame2.grid(row=2,column=0,sticky="nw")# Calendarios e Labels
-frame3.grid(row=2,column=1,sticky="w")# Canvas
-frame5.grid(row=0,column=1)# labels de hoje
-frame6.grid(row=2,column=2,sticky="n")# botões
+frame1.place(x=0,y=40)# ComboBox e botoes
+frame2.place(x=0,y=200)# Calendarios e Labels
+frame3.place(x=350,y=200)# Canvas
+frame5.place(x=0,y=30)# labels de hoje
+frame6.place(x=610,y=220)# botões
+
 
 #Canvas
-canvas = Canvas(frame3, bg='white', width=260, height=300)
-canvas.grid(row=2,column=0)
-
+canvas = Canvas(frame3, bg='white', width=260, height=250)
+canvas.grid(row=2,column=0,rowspan=2,columnspan=2)
 
     # Botões
 
@@ -277,36 +284,29 @@ b2=Button(frame1,text="Salvar em:",command=browse_button)
 
 b4=Button(frame6,text="Remover",command=revomer_button)
 b5=Button(frame6,text="Remover todos",command=revomer_button_todos)
-b6=Button(frame6,text="Download",font=("Helvetica", 10),fg="red",command=download_button)
+b6=Button(frame6,text="Download",font=("Helvetica", 12),fg="red",command=download_button)
 
-    #frame1
-b1.grid(row=2,column=4,pady=5)#Adicionar
-b2.grid(row=4,column=4,pady=5)#Salvar em:,
+#frame1
+b1.grid(row=2,column=1,pady=5)#Adicionar
+b2.grid(row=4,column=1,pady=5)#Salvar em:,
 
 
 #frame6
-b4.grid(row=1,column=0,pady=30)#Remover
-b5.grid(row=3,column=0,sticky="n",pady=20)#Remover todos
-l55=Label(frame6)
-l56=Label(frame6)
-l57=Label(frame6)
+b4.grid(row=2,column=1,sticky="w")#Remover
+b5.grid(row=3,column=1,pady=15)#Remover todos
+b6.grid(row=6,column=1,sticky="w",pady=135)
 
-l57.grid(row=4,column=0,pady=20)#branco
-l57.grid(row=4,column=0,pady=50)#branco
-b6.grid(row=5,column=1,pady=10)
-
-b6.grid(row=5,column=0,sticky="S",pady=10)
-    # ComboBox
+# ComboBox
 c1=ttk.Combobox(frame1,width=30)
-c1.grid(row=2,column=2,sticky="w")
+c1.grid(row=2,column=0,sticky="w")
 c1['values']=i1.sigla
 c1.current(2)
-    # Calendar
+# Calendar
 cal=tkcalendar.Calendar(frame2)
 cal.bind('<<CalendarSelected>>',calButtonMouse)
 cal.grid(row=2,column=0,sticky="w")
 
-    # Labels
+# Labels
 l1=Label(frame1,text="AutoRbmcIbge",font=("Helvetica", 20))#fixo
 l2=Label(frame1,text="Bases")#fixo
 l3=Label(frame1,text=version)#fixo
@@ -322,17 +322,17 @@ l11=Label(frame2,text='0')# data do levantamento
 l12=Label(frame2,text="Dia do ano do levantamento:")
 l13=Label(frame2,text='0')
 l14=Label(frame3,text='Base e data para download')
-# l15=Label(frame3,text='Data')
 
-l1.grid(row=0,column=5)
-l2.grid(row=1,column=2,sticky="w")
-l3.grid(row=0,column=10,sticky="e")
+
+l1.grid(row=0,column=4,sticky="e")
+l2.grid(row=1,column=0,sticky="w")
+l3.grid(row=0,column=5,sticky="e")
 l4.grid(row=2,column=5,sticky="w") #Data atual
 l6.grid(row=2,column=6)#Data
 l5.grid(row=3,column=5)# dia de ano hoje
 l7.grid(row=3,column=6,sticky="e")# dia de ano
     # l8.grid(row=4,column=9) # testando update
-l9.grid(row=4,column=5,sticky="e")
+l9.grid(row=4,column=2,sticky="w")
     #frame 2
 l10.grid(row=0,column=0,sticky="w")# data do levantamento
 l11.grid(row=0,column=1,sticky="w")# data do levantamento
