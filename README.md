@@ -6,8 +6,8 @@ Software não oficial do IBGE. Tem a função de executar downloads da RBMC (Red
 
 ### Installing
 
-Com git e python3 instalado.
-#
+Com Git e Python3 instalado.
+
 No terminal:
 
 ```
