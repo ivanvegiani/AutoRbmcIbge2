@@ -11,8 +11,7 @@ rbmc: Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS
 Script de código aberto e livre, cedido gratuitamente pelo autor.
 """
 
-
-import autoRmbclib1
+import modulo1
 from tkinter import*
 from tkinter import ttk
 from tkinter import filedialog
@@ -242,7 +241,7 @@ def threading_download():
         i=i+1
 
 
-i1=autoRmbclib1.RbmcLib()
+i1=modulo1.RbmcLib()
 now1 = i1.now1
 year=str(now1.year)
 month=str(now1.month)
