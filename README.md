@@ -16,7 +16,7 @@ cd AutoRbmcIbge2
 python setup.py install
 ```
 
-Say what the step will be
+Windows com instalador através do link:
 
 ```
 Give the example
