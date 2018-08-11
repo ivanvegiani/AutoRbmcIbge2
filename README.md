@@ -4,21 +4,19 @@
 
 Software não oficial do IBGE. Tem a função de executar downloads da RBMC (Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS) do site de forma prática e fácil. Não precisando saber o dia do ano e nem as siglas das bases. Somente por enquanto, foi implementado as bases do Paraná. Em um projeto futuro, será implementado todas as bases do Brasil.
 
-
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
-```
-Give examples
-```
-
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Windows ou Linux direto pelo código fonte. Com Git e Python3 instalado.
 
-Say what the step will be
+No terminal:
+
+```
+git clone https://github.com/ivanvegiani/AutoRbmcIbge2/
+cd AutoRbmcIbge2
+python setup.py install
+```
+
+Windows com instalador através do link:
 
 ```
 Give the example
