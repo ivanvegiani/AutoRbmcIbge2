@@ -6,7 +6,7 @@ Software não oficial do IBGE. Tem a função de executar downloads da RBMC (Red
 
 ### Installing
 
-Com Git e Python3 instalado.
+Windows ou Linux direto pelo código fonte. Com Git e Python3 instalado.
 
 No terminal:
 
