@@ -14,15 +14,16 @@ No terminal:
 git clone https://github.com/ivanvegiani/AutoRbmcIbge2/
 cd AutoRbmcIbge2
 python setup.py install
+Executar AutoRbmc.py
 ```
 
-Windows com instalador através do link:
+Windows com executável compilado:
 
 ```
-Give the example
+Link...
 ```
 
-And repeat
+Descompactar e executar arquivo 
 
 ```
 until finished
