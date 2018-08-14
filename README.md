@@ -19,8 +19,9 @@ Executar AutoRbmc.py
 
 Windows com executável compilado:
 
+Fazer download do link abaixo, extrair do zip e executar o arquivo AutoRbmc.exe
 ```
-Link...
+https://sourceforge.net/projects/autorbmc2/
 ```
 
 Descompactar e executar arquivo 
