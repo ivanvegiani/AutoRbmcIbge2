@@ -42,13 +42,6 @@ tags_vetor=[]
 version="versão 2.0"
 dataEscolhida=[]
 
-os1=os.name
-if os.name=="nt":
-    root.iconbitmap("D:\Python\envAutoRmbcIbge2\AutoRbmcIbge2\source\\alvo.ico")
-else:
-    # root.iconbitmap("@alvo2.xbm") // desisto, não esta funcionando no linux
-    pass
-
 
 
 
@@ -203,10 +196,10 @@ def threading_download():
         frame8.place(x=350,y=500)# progress bar
         text1=str(bases_escolhidas_download[i])
         pb = ttk.Progressbar(frame8, orient="horizontal", length=300, mode="determinate")
-        try:
-            pb["maximum"] =i1.fileSize(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
-        except ftplib.error_perm:
-            pass
+        time.sleep(1)
+        pb["maximum"] =i1.fileSize(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
+        #except ftplib.error_perm:
+            #pass
         pb["value"]=0
         l20=Label(frame8,text=text1,font=("Helvetica", 12))
         l20.config(text=text1)
@@ -229,9 +222,9 @@ def threading_download():
 
     i=0
     for j in bases_escolhidas:
+        t2 = threading.Thread(target=threading_gui, args=(bases_escolhidas_download,i,))
+        t2.start()
         try:
-            t2 = threading.Thread(target=threading_gui, args=(bases_escolhidas_download,i,))
-            t2.start()
             i1.download_ftp(local_folders.get(),cal.selection_get().year,cal2_converted[i],bases_escolhidas_download,i)
             tkinter.messagebox.showinfo('Sucesso','Concluído download ' +str(bases_escolhidas_download[i]+' com sucesso!'))
         except ftplib.error_perm:

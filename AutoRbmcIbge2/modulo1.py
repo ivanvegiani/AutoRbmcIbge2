@@ -13,7 +13,7 @@ import threading
 
 
 
-# Configurações iniciais
+# Configurações inicial
 
 
 
