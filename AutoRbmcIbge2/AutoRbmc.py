@@ -1,10 +1,10 @@
 # coding: utf-8
-# version: 2.0
+# version: 2.1
 # python 3
 # ftp://geoftp.ibge.gov.br/informacoes_sobre_posicionamento_geodesico/rbmc/dados/
 
 """
-version:2.0
+version:2.1
 author: Jose Ivan Silva Vegiani
 Automacao de download e descompactação de dados do rbmc (IBGE)
 rbmc: Rede Brasileira de Monitoramento Contínuo dos Sistemas GNSS
@@ -39,7 +39,7 @@ x_text_canvas=70
 bases_escolhidas=[]
 tags_bases=0
 tags_vetor=[]
-version="versão 2.0"
+version="versão 2.1"
 dataEscolhida=[]
 
 
@@ -72,9 +72,10 @@ def add_button_text():
     global tags_bases
     global tags_vetor
     global dataEscolhida
+    global indiceListBox
     dataText=[]
     x_text_canvas=10
-
+   
 
     bb1=True
     aa1=c1.get()
@@ -94,8 +95,13 @@ def add_button_text():
     if bb1:
         bases_escolhidas.append(c1.get())
         dataEscolhida.append(cal.selection_get())
-        dataText.append(str(cal.selection_get().day)+"/"+str(cal.selection_get().month)+"/"+str(cal.selection_get().year))
+        labelTemp1 = str(cal.selection_get().day)+"/"+str(cal.selection_get().month)+"/"+str(cal.selection_get().year)
+        dataText.append(labelTemp1)
         tags_vetor.append(canvas.create_text(x_text_canvas,y_text_canvas,anchor='w',justify='center', font="Times 12 italic bold",text=bases_escolhidas[-1]+"          "+str(dataText[-1]),tag=str(tags_bases)))
+        
+        labelTemp2 = str(bases_escolhidas[bases_escolhidas.index(c1.get())]) + "             " +  dataText[dataText.index(labelTemp1)]
+        listbox.insert( bases_escolhidas.index(c1.get()), labelTemp2)
+     
         tags_bases=tags_vetor[-1]
         y_text_canvas=y_text_canvas+20
 
@@ -250,8 +256,9 @@ root.title("AutoRbmcIbge2")
 frame1=Frame() #superior
 frame2=Frame() # inferior
 frame3=Frame()# canvas
-frame5=Frame()
-frame6=Frame()
+frame5=Frame()# labels de hoje
+frame6=Frame()# botões
+
 
 
 
@@ -265,9 +272,15 @@ frame6.place(x=610,y=220)# botões
 
 #Canvas
 canvas = Canvas(frame3, bg='white', width=260, height=250)
-canvas.grid(row=2,column=0,rowspan=2,columnspan=2)
+#canvas.grid(row=2,column=0,rowspan=2,columnspan=2)
 
-    # Botões
+#Listbox
+
+listbox= Listbox(frame3, bg='white',width=45)
+listbox.grid(row=2,column=0,rowspan=2,columnspan=2)
+
+
+# Botões
 
 b1=Button(frame1,text="Adicionar base",command=add_button_text)
 b2=Button(frame1,text="Salvar em:",command=browse_button)
@@ -292,6 +305,7 @@ c1=ttk.Combobox(frame1,width=30)
 c1.grid(row=2,column=0,sticky="w")
 c1['values']=i1.sigla
 c1.current(2)
+
 # Calendar
 cal=tkcalendar.Calendar(frame2)
 cal.bind('<<CalendarSelected>>',calButtonMouse)
