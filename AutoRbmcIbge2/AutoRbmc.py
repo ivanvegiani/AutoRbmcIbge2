@@ -98,8 +98,8 @@ def add_button_text():
         labelTemp1 = str(cal.selection_get().day)+"/"+str(cal.selection_get().month)+"/"+str(cal.selection_get().year)
         dataText.append(labelTemp1)
         tags_vetor.append(canvas.create_text(x_text_canvas,y_text_canvas,anchor='w',justify='center', font="Times 12 italic bold",text=bases_escolhidas[-1]+"          "+str(dataText[-1]),tag=str(tags_bases)))
-        
-        labelTemp2 = str(bases_escolhidas[bases_escolhidas.index(c1.get())]) + "             " +  dataText[dataText.index(labelTemp1)]
+        tempSpaces = " "
+        labelTemp2 = str(bases_escolhidas[bases_escolhidas.index(c1.get())]) + 10*tempSpaces  +  dataText[dataText.index(labelTemp1)]
         listbox.insert( bases_escolhidas.index(c1.get()), labelTemp2)
      
         tags_bases=tags_vetor[-1]
@@ -276,7 +276,7 @@ canvas = Canvas(frame3, bg='white', width=260, height=250)
 
 #Listbox
 
-listbox= Listbox(frame3, bg='white',width=45)
+listbox= Listbox(frame3, bg='white',font = 20, width=35,)
 listbox.grid(row=2,column=0,rowspan=2,columnspan=2)
 
 
