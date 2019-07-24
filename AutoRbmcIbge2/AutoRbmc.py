@@ -116,10 +116,12 @@ def revomer_button_todos():
     y_text_canvas=10
     x_text_canvas=70
     global bases_escolhidas
+    listbox.delete(0,len(bases_escolhidas))
     dataEscolhida.clear()
     bases_escolhidas.clear()
     canvas.delete(ALL)
     canvas.update()
+
 
 def revomer_button():
     global tags_bases
@@ -128,13 +130,15 @@ def revomer_button():
     global bases_escolhidas
     global tags_vetor
     y_text_canvas=y_text_canvas-20
+    print((listbox.curselection()[0]))
     try:
-        bases_escolhidas.pop(-1)
-        dataEscolhida.pop(-1)
+        bases_escolhidas.pop(listbox.curselection()[0])
+        dataEscolhida.pop(listbox.curselection()[0])
     except IndexError:
         pass
     canvas.delete(tags_vetor[tags_bases-1])
     tags_bases=tags_bases-1
+    listbox.delete (listbox.curselection()[0])
 
 
 def download_button():
