@@ -21,7 +21,7 @@ import threading
 # loop=15 # quantidade de dias recentes para download de base
 # baseFolder = 'Cascavel', 'Maringá', 'Curitiba', 'Guarapuava' # bases a serem realizadas do download automático
 # path_root = 'c:\IBGE' # pasta root das bases
-# sigla = ['prcv', 'prma', 'ufpr', 'prgu'] # siglas das bases
+# sigla = ['prcv', 'prma', 'ufpr', 'prgu','spor'] # siglas das bases
 
 # variaveis globais
 
@@ -82,7 +82,7 @@ class RbmcLib():
 
 
     def __init__(self):
-        self.sigla = ('Cascavel - prcv', 'Maringá - prma', 'Curitiba - ufpr', 'Guarapuava - prgu') # siglas das bases
+        self.sigla = ('Cascavel - prcv', 'Maringá - prma', 'Curitiba - ufpr', 'Guarapuava - prgu','Ourinhos - spor') # siglas das bases
         self.now1=now1
         self.today_gnss=date2doy(datetime.date(now1.year,now1.month,now1.day))
 
@@ -100,6 +100,8 @@ class RbmcLib():
                 file_target.append('ufpr'+str(id_doy[i])+"1"+".zip")
             elif bases[i]=='Guarapuava - prgu':
                 file_target.append('prgu'+str(id_doy[i])+"1"+".zip")
+            elif bases[i]=='Ourinhos - spor':
+                file_target.append('spor'+str(id_doy[i])+"1"+".zip")
             else:
                 pass
             i=i+1
